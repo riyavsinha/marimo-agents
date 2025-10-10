@@ -22,6 +22,7 @@ class GlobalSettings:
         "MARIMO_IN_SECURE_ENVIRONMENT", "false"
     ) in ("true", "1")
     DISABLE_HOME_PAGE: bool = False
+    DISABLE_TERMINAL: bool = False
 
 
 GLOBAL_SETTINGS = GlobalSettings()

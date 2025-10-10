@@ -185,6 +185,7 @@ export const UserConfigSchema = z
     server: z
       .looseObject({
         disable_home_page: z.boolean().optional(),
+        disable_terminal: z.boolean().optional(),
       })
       .prefault(() => ({})),
     sharing: z

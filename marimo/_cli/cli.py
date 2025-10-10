@@ -484,6 +484,14 @@ https://github.com/marimo-team/marimo/issues/5219.""",
     help="Disable the home page, return 404 for root path when no file is specified.",
 )
 @click.option(
+    "--disable-terminal",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    type=bool,
+    help="Disable terminal access in the UI and reject terminal websocket connections.",
+)
+@click.option(
     "--timeout",
     required=False,
     default=None,
@@ -518,6 +526,7 @@ def edit(
     server_startup_command: Optional[str],
     asset_url: Optional[str],
     disable_home_page: bool,
+    disable_terminal: bool,
     timeout: Optional[float],
     name: Optional[str],
     args: tuple[str, ...],
@@ -590,6 +599,7 @@ def edit(
 
     GLOBAL_SETTINGS.PROFILE_DIR = profile_dir
     GLOBAL_SETTINGS.DISABLE_HOME_PAGE = disable_home_page
+    GLOBAL_SETTINGS.DISABLE_TERMINAL = disable_terminal
     if not skip_update_check and os.getenv("MARIMO_SKIP_UPDATE_CHECK") != "1":
         GLOBAL_SETTINGS.CHECK_STATUS_UPDATE = True
         # Check for version updates

@@ -215,11 +215,14 @@ class ServerConfig(TypedDict):
         inside its static assets directory.
     - `disable_home_page`: if true, the server will return 404 for the root path
         when no file is specified, preventing access to the home page
+    - `disable_terminal`: if true, the server will disable terminal access
+        in the UI and reject terminal websocket connections
     """
 
     browser: Union[Literal["default"], str]
     follow_symlink: bool
     disable_home_page: bool
+    disable_terminal: bool
 
 
 @dataclass
@@ -655,6 +658,7 @@ DEFAULT_CONFIG: MarimoConfig = {
         "browser": "default",
         "follow_symlink": False,
         "disable_home_page": False,
+        "disable_terminal": False,
     },
     "language_servers": {
         "pylsp": {

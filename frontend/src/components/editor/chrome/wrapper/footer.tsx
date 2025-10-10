@@ -6,6 +6,7 @@ import type React from "react";
 import { Tooltip } from "@/components/ui/tooltip";
 import { cellErrorCount } from "@/core/cells/cells";
 import { IfCapability } from "@/core/config/if-capability";
+import { useServerConfig } from "@/core/config/config";
 import { useHotkey } from "@/hooks/useHotkey";
 import { cn } from "@/utils/cn";
 import { invariant } from "@/utils/invariant";
@@ -25,6 +26,7 @@ export const Footer: React.FC = () => {
   const { selectedPanel, isTerminalOpen } = useChromeState();
   const { toggleApplication, toggleTerminal } = useChromeActions();
   const errorCount = useAtomValue(cellErrorCount);
+  const serverConfig = useServerConfig();
 
   const renderIcon = ({ Icon }: PanelDescriptor, className?: string) => {
     return <Icon className={cn("h-5 w-5", className)} />;
@@ -50,14 +52,16 @@ export const Footer: React.FC = () => {
       </FooterItem>
 
       <IfCapability capability="terminal">
-        <FooterItem
-          tooltip="Open terminal"
-          selected={isTerminalOpen}
-          onClick={() => toggleTerminal()}
-          data-testid="footer-terminal"
-        >
-          <TerminalSquareIcon className="h-5 w-5" />
-        </FooterItem>
+        {!serverConfig.disable_terminal && (
+          <FooterItem
+            tooltip="Open terminal"
+            selected={isTerminalOpen}
+            onClick={() => toggleTerminal()}
+            data-testid="footer-terminal"
+          >
+            <TerminalSquareIcon className="h-5 w-5" />
+          </FooterItem>
+        )}
       </IfCapability>
 
       <RuntimeSettings />

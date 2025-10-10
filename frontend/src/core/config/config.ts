@@ -52,11 +52,13 @@ export const aiAtom = atom((get) => {
 
 export const serverConfigAtom = atom(async () => {
   try {
-    const response = await API.get<{ disable_home_page: boolean }>(
-      "/kernel/server_config",
-    );
+    const response = await API.get<{
+      disable_home_page: boolean;
+      disable_terminal: boolean;
+    }>("/kernel/server_config");
     return {
       disable_home_page: response?.disable_home_page ?? false,
+      disable_terminal: response?.disable_terminal ?? false,
       browser: "default",
       follow_symlink: false,
     };
@@ -64,6 +66,7 @@ export const serverConfigAtom = atom(async () => {
     Logger.warn("Failed to fetch server config:", error);
     return {
       disable_home_page: false,
+      disable_terminal: false,
       browser: "default",
       follow_symlink: false,
     };

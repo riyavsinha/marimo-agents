@@ -141,6 +141,9 @@ async def get_server_config(request: Request) -> JSONResponse:
                             disable_home_page:
                                 type: boolean
                                 description: Whether the homepage is disabled
+                            disable_terminal:
+                                type: boolean
+                                description: Whether terminal access is disabled
     """
     from marimo._cli.cli import GLOBAL_SETTINGS
     app_state = AppState(request)
@@ -150,10 +153,12 @@ async def get_server_config(request: Request) -> JSONResponse:
     server_config = user_config.get("server", {})
     
     # Return runtime configuration combining user config and CLI flags
+    # CLI flags override config file settings
     return JSONResponse(
         content={
             "browser": server_config.get("browser", "default"),
             "follow_symlink": server_config.get("follow_symlink", False),
-            "disable_home_page": GLOBAL_SETTINGS.DISABLE_HOME_PAGE,
+            "disable_home_page": server_config.get("disable_home_page", False) or GLOBAL_SETTINGS.DISABLE_HOME_PAGE,
+            "disable_terminal": server_config.get("disable_terminal", False) or GLOBAL_SETTINGS.DISABLE_TERMINAL,
         }
     )
