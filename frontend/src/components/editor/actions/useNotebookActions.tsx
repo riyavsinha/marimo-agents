@@ -273,7 +273,7 @@ export function useNotebookActions() {
       label: "Helper panel",
       handle: NOOP_HANDLER,
       dropdown: PANELS.flatMap(({ type, Icon, hidden }) => {
-        if (hidden) {
+        if (hidden || serverConfig.disabled_panels.includes(type)) {
           return [];
         }
         return {

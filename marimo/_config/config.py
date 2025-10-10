@@ -217,12 +217,17 @@ class ServerConfig(TypedDict):
         when no file is specified, preventing access to the home page
     - `disable_terminal`: if true, the server will disable terminal access
         in the UI and reject terminal websocket connections
+    - `disabled_panels`: list of panel names to disable in the UI.
+        Valid panel names: "files", "errors", "variables", "outline", 
+        "dependencies", "tracing", "packages", "documentation", "snippets",
+        "datasources", "scratchpad", "chat", "agents", "secrets", "logs", "suggestions"
     """
 
     browser: Union[Literal["default"], str]
     follow_symlink: bool
     disable_home_page: bool
     disable_terminal: bool
+    disabled_panels: list[str]
 
 
 @dataclass
@@ -659,6 +664,7 @@ DEFAULT_CONFIG: MarimoConfig = {
         "follow_symlink": False,
         "disable_home_page": False,
         "disable_terminal": False,
+        "disabled_panels": [],
     },
     "language_servers": {
         "pylsp": {

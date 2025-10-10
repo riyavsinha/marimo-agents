@@ -492,6 +492,12 @@ https://github.com/marimo-team/marimo/issues/5219.""",
     help="Disable terminal access in the UI and reject terminal websocket connections.",
 )
 @click.option(
+    "--disabled-panels",
+    default="",
+    type=str,
+    help="Comma-separated list of panel names to disable (e.g., 'files,packages,chat').",
+)
+@click.option(
     "--timeout",
     required=False,
     default=None,
@@ -527,6 +533,7 @@ def edit(
     asset_url: Optional[str],
     disable_home_page: bool,
     disable_terminal: bool,
+    disabled_panels: str,
     timeout: Optional[float],
     name: Optional[str],
     args: tuple[str, ...],
@@ -600,6 +607,7 @@ def edit(
     GLOBAL_SETTINGS.PROFILE_DIR = profile_dir
     GLOBAL_SETTINGS.DISABLE_HOME_PAGE = disable_home_page
     GLOBAL_SETTINGS.DISABLE_TERMINAL = disable_terminal
+    GLOBAL_SETTINGS.DISABLED_PANELS = disabled_panels.split(",") if disabled_panels else []
     if not skip_update_check and os.getenv("MARIMO_SKIP_UPDATE_CHECK") != "1":
         GLOBAL_SETTINGS.CHECK_STATUS_UPDATE = True
         # Check for version updates

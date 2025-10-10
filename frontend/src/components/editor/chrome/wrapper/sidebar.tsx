@@ -6,6 +6,7 @@ import type React from "react";
 import type { PropsWithChildren } from "react";
 import { Tooltip } from "@/components/ui/tooltip";
 import { notebookQueuedOrRunningCountAtom } from "@/core/cells/cells";
+import { useServerConfig } from "@/core/config/config";
 import { cn } from "@/utils/cn";
 import { FeedbackButton } from "../components/feedback-button";
 import { useChromeActions, useChromeState } from "../state";
@@ -14,13 +15,17 @@ import { PANELS, type PanelDescriptor } from "../types";
 export const Sidebar: React.FC = () => {
   const { selectedPanel } = useChromeState();
   const { toggleApplication } = useChromeActions();
+  const serverConfig = useServerConfig();
 
   const renderIcon = ({ Icon }: PanelDescriptor, className?: string) => {
     return <Icon className={cn("h-5 w-5", className)} />;
   };
 
   const sidebarItems = PANELS.filter(
-    (p) => !p.hidden && p.position === "sidebar",
+    (p) =>
+      !p.hidden &&
+      p.position === "sidebar" &&
+      !serverConfig.disabled_panels.includes(p.type),
   );
 
   return (

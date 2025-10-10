@@ -55,10 +55,12 @@ export const serverConfigAtom = atom(async () => {
     const response = await API.get<{
       disable_home_page: boolean;
       disable_terminal: boolean;
+      disabled_panels: string[];
     }>("/kernel/server_config");
     return {
       disable_home_page: response?.disable_home_page ?? false,
       disable_terminal: response?.disable_terminal ?? false,
+      disabled_panels: response?.disabled_panels ?? [],
       browser: "default",
       follow_symlink: false,
     };
@@ -67,6 +69,7 @@ export const serverConfigAtom = atom(async () => {
     return {
       disable_home_page: false,
       disable_terminal: false,
+      disabled_panels: [],
       browser: "default",
       follow_symlink: false,
     };
