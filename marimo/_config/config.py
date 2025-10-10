@@ -213,10 +213,13 @@ class ServerConfig(TypedDict):
         with Python's webbrowser module (eg, `"firefox"` or `"chrome"`)
     - `follow_symlink`: if true, the server will follow symlinks it finds
         inside its static assets directory.
+    - `disable_home_page`: if true, the server will return 404 for the root path
+        when no file is specified, preventing access to the home page
     """
 
     browser: Union[Literal["default"], str]
     follow_symlink: bool
+    disable_home_page: bool
 
 
 @dataclass
@@ -651,6 +654,7 @@ DEFAULT_CONFIG: MarimoConfig = {
     "server": {
         "browser": "default",
         "follow_symlink": False,
+        "disable_home_page": False,
     },
     "language_servers": {
         "pylsp": {

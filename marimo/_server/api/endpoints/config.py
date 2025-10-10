@@ -122,3 +122,38 @@ async def save_user_config(
         content=asdict(SuccessResponse()),
         background=background_task,
     )
+
+
+@router.get("/server_config")
+@requires("edit")
+async def get_server_config(request: Request) -> JSONResponse:
+    """
+    Get server runtime configuration
+    
+    responses:
+        200:
+            description: Get the server runtime configuration
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            disable_home_page:
+                                type: boolean
+                                description: Whether the homepage is disabled
+    """
+    from marimo._cli.cli import GLOBAL_SETTINGS
+    app_state = AppState(request)
+    
+    # Get the user config and check for server config
+    user_config = app_state.config_manager.get_user_config()
+    server_config = user_config.get("server", {})
+    
+    # Return runtime configuration combining user config and CLI flags
+    return JSONResponse(
+        content={
+            "browser": server_config.get("browser", "default"),
+            "follow_symlink": server_config.get("follow_symlink", False),
+            "disable_home_page": GLOBAL_SETTINGS.DISABLE_HOME_PAGE,
+        }
+    )

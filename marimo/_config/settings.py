@@ -21,6 +21,7 @@ class GlobalSettings:
     IN_SECURE_ENVIRONMENT: bool = os.getenv(
         "MARIMO_IN_SECURE_ENVIRONMENT", "false"
     ) in ("true", "1")
+    DISABLE_HOME_PAGE: bool = False
 
 
 GLOBAL_SETTINGS = GlobalSettings()

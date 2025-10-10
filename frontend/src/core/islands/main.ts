@@ -183,6 +183,10 @@ export async function initialize() {
       case "query-params-clear":
         queryParamHandlers.clear();
         return;
+      case "suggestions":
+        // Handle suggestions - this might be for AI prompts or other UI suggestions
+        // For now, we'll just log them as they may not be relevant in islands mode
+        return;
       case "reconnected":
         return;
       default:

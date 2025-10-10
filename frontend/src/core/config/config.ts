@@ -3,6 +3,8 @@ import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { merge } from "lodash-es";
 import { OverridingHotkeyProvider } from "../hotkeys/hotkeys";
 import { type Platform, resolvePlatform } from "../hotkeys/shortcuts";
+import { Logger } from "../../utils/Logger";
+import { API } from "../network/api";
 import { store } from "../state/jotai";
 import {
   type AppConfig,
@@ -48,6 +50,26 @@ export const aiAtom = atom((get) => {
   return get(resolvedMarimoConfigAtom).ai;
 });
 
+export const serverConfigAtom = atom(async () => {
+  try {
+    const response = await API.get<{ disable_home_page: boolean }>(
+      "/kernel/server_config",
+    );
+    return {
+      disable_home_page: response?.disable_home_page ?? false,
+      browser: "default",
+      follow_symlink: false,
+    };
+  } catch (error) {
+    Logger.warn("Failed to fetch server config:", error);
+    return {
+      disable_home_page: false,
+      browser: "default",
+      follow_symlink: false,
+    };
+  }
+});
+
 export const completionAtom = atom((get) => {
   return get(resolvedMarimoConfigAtom).completion;
 });
@@ -72,6 +94,10 @@ export function useResolvedMarimoConfig() {
 
 export function getResolvedMarimoConfig() {
   return store.get(resolvedMarimoConfigAtom);
+}
+
+export function useServerConfig() {
+  return useAtomValue(serverConfigAtom);
 }
 
 export const aiEnabledAtom = atom<boolean>((get) => {

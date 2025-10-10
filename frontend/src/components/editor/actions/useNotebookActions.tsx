@@ -55,7 +55,7 @@ import {
   useCellActions,
 } from "@/core/cells/cells";
 import { disabledCellIds, enabledCellIds } from "@/core/cells/utils";
-import { useResolvedMarimoConfig } from "@/core/config/config";
+import { useResolvedMarimoConfig, useServerConfig } from "@/core/config/config";
 import { Constants } from "@/core/constants";
 import { useLayoutActions, useLayoutState } from "@/core/layout/layout";
 import { useTogglePresenting } from "@/core/layout/useTogglePresenting";
@@ -97,6 +97,7 @@ export function useNotebookActions() {
   const kioskMode = useAtomValue(kioskModeAtom);
   const hideAllMarkdownCode = useHideAllMarkdownCode();
   const [resolvedConfig] = useResolvedMarimoConfig();
+  const serverConfig = useServerConfig();
 
   const {
     updateCellConfig,
@@ -512,8 +513,9 @@ export function useNotebookActions() {
       icon: <Home size={14} strokeWidth={1.5} />,
       label: "Return home",
       // If file is in the url, then we ran `marimo edit`
-      // without a specific file
-      hidden: !location.search.includes("file"),
+      // without a specific file, or if homepage is disabled
+      hidden:
+        !location.search.includes("file") || serverConfig.disable_home_page,
       handle: () => {
         const withoutSearch = document.baseURI.split("?")[0];
         window.open(withoutSearch, "_self");
