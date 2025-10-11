@@ -223,7 +223,8 @@ class ServerConfig(TypedDict):
     - `disabled_panels`: list of panel names to disable in the UI.
         Valid panel names: "files", "errors", "variables", "outline", 
         "dependencies", "tracing", "packages", "documentation", "snippets",
-        "datasources", "scratchpad", "chat", "agents", "secrets", "logs", "suggestions"
+        "datasources", "scratchpad", "chat", "agents", "secrets", "logs", 
+        "suggestions", "feedback"
     """
 
     browser: Union[Literal["default"], str]

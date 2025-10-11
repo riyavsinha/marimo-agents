@@ -40,11 +40,13 @@ export const Sidebar: React.FC = () => {
           {renderIcon(p)}
         </SidebarItem>
       ))}
-      <FeedbackButton>
-        <SidebarItem tooltip="Send feedback!" selected={false}>
-          <MessageCircleQuestionIcon className="h-5 w-5" />
-        </SidebarItem>
-      </FeedbackButton>
+      {!serverConfig.disabled_panels.includes("feedback") && (
+        <FeedbackButton>
+          <SidebarItem tooltip="Send feedback!" selected={false}>
+            <MessageCircleQuestionIcon className="h-5 w-5" />
+          </SidebarItem>
+        </FeedbackButton>
+      )}
       <div className="flex-1" />
       <QueuedOrRunningStack />
     </div>
