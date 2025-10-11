@@ -119,6 +119,47 @@ This will render as:
 
 The suggestions are rendered in a new panel to the right of the agent cell. These are generated as a background task, so they can happen after the agent cell has returned its response.
 
+## Other Fork Modifications 🔧
+
+This fork includes additional server configuration options for enhanced security and control in shared environments:
+
+### UI Restrictions
+
+**Disable Panels**: Hide specific panels from the sidebar and navigation menus.
+```toml
+# In .marimo.toml
+[server]
+disabled_panels = ["chat", "secrets", "feedback", "files"]
+```
+```bash
+# Via CLI
+marimo edit --disabled-panels "chat,secrets,feedback"
+```
+
+Available panels to disable: `files`, `errors`, `variables`, `outline`, `dependencies`, `tracing`, `packages`, `documentation`, `snippets`, `datasources`, `scratchpad`, `chat`, `agents`, `secrets`, `logs`, `suggestions`, `feedback`.
+
+**Disable Terminal**: Completely disable terminal access in the UI.
+```toml
+# In .marimo.toml  
+[server]
+disable_terminal = true
+```
+```bash
+# Via CLI
+marimo edit --disable-terminal
+```
+
+**Disable Package Installation**: Hide package installation features while keeping package viewing.
+```toml
+# In .marimo.toml
+[server] 
+disable_package_installation = true
+```
+```bash
+# Via CLI
+marimo edit --disable-package-installation
+```
+
 ---
 
 # Original README
