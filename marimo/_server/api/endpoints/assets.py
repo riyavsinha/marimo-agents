@@ -85,6 +85,18 @@ async def index(request: Request) -> HTMLResponse:
     html = index_html.read_text()
 
     if not file_key:
+        # Check if home page is disabled in user configuration or CLI flag
+        user_config = app_state.config_manager.get_user_config()
+        from marimo._config.settings import GLOBAL_SETTINGS
+        
+        # Access config as dictionary since MarimoConfig is a TypedDict
+        server_config = user_config.get("server", {})
+        disable_home_page_config = server_config.get("disable_home_page", False)
+        
+        if disable_home_page_config or GLOBAL_SETTINGS.DISABLE_HOME_PAGE:
+            LOGGER.debug("Home page disabled by configuration, returning 404")
+            raise HTTPException(status_code=404, detail="Home page is disabled")
+        
         # We don't know which file to use, so we need to render a homepage
         LOGGER.debug("No file key provided, serving homepage")
         html = home_page_template(

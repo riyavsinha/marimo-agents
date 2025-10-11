@@ -1,0 +1,35 @@
+# syntax=docker/dockerfile:1.12
+FROM python:3.13-slim AS runtime
+
+# Make `uv` available
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+WORKDIR /app
+
+# Copy Python source
+COPY pyproject.toml README.md LICENSE ./
+COPY marimo ./marimo
+
+# Install the package with pre-built frontend assets
+ENV UV_SYSTEM_PYTHON=1
+RUN uv pip install --no-cache-dir -e .
+
+# Create non-root user
+RUN useradd -m appuser
+
+# Copy tutorials
+COPY --chown=appuser:appuser marimo/_tutorials tutorials
+RUN rm -rf tutorials/__init__.py
+
+# Set up directories and permissions
+RUN mkdir -p /app/data && chown -R appuser:appuser /app
+
+ENV PORT=8080
+EXPOSE $PORT
+ENV HOST=0.0.0.0
+ENV MARIMO_SKIP_UPDATE_CHECK=1
+
+# Switch to non-root user
+USER appuser
+
+CMD ["marimo", "edit", "--no-token", "-p", "8080", "--host", "0.0.0.0"]

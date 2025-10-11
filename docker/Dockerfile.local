@@ -1,0 +1,67 @@
+# syntax=docker/dockerfile:1.12
+FROM node:20-slim AS frontend-builder
+
+# Build frontend assets
+WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json turbo.json ./
+COPY frontend/package.json frontend/tsconfig.json frontend/vite.config.mts frontend/tailwind.config.cjs frontend/postcss.config.cjs ./frontend/
+COPY packages/*/package.json ./packages/*/
+COPY patches ./patches
+
+# Install pnpm and dependencies
+RUN npm install -g pnpm
+RUN pnpm install --frozen-lockfile
+
+# Copy frontend source and build
+COPY frontend ./frontend
+COPY packages ./packages
+RUN cd frontend && pnpm build
+
+# Python build stage
+FROM python:3.13-slim AS python-builder
+
+# Make `uv` available
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+WORKDIR /app
+
+# Copy Python source
+COPY pyproject.toml ./
+COPY marimo ./marimo
+COPY README.md LICENSE ./
+
+# Copy built frontend assets from previous stage
+COPY --from=frontend-builder /app/frontend/dist ./marimo/_static
+
+# Install the package
+ENV UV_SYSTEM_PYTHON=1
+RUN uv pip install --no-cache-dir -e .
+
+# Runtime stage
+FROM python:3.13-slim AS runtime
+
+# Make `uv` available
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Create non-root user
+RUN useradd -m appuser
+
+# Copy installed package from builder
+COPY --from=python-builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
+COPY --from=python-builder /usr/local/bin /usr/local/bin
+
+WORKDIR /app
+
+# Copy tutorials
+COPY --chown=appuser:appuser marimo/_tutorials tutorials
+RUN rm -rf tutorials/__init__.py
+
+# Set up directories and permissions
+RUN mkdir -p /app/data && chown -R appuser:appuser /app
+
+ENV PORT=8080
+EXPOSE $PORT
+ENV HOST=0.0.0.0
+ENV MARIMO_SKIP_UPDATE_CHECK=1
+
+CMD ["marimo", "edit", "--no-token", "-p", "8080", "--host", "0.0.0.0"]

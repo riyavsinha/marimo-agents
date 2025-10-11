@@ -19,6 +19,7 @@ import { XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LazyMount } from "@/components/utils/lazy-mount";
 import { IfCapability } from "@/core/config/if-capability";
+import { useServerConfig } from "@/core/config/config";
 import { cn } from "@/utils/cn";
 import { ErrorBoundary } from "../../boundary/ErrorBoundary";
 import { ContextAwarePanel } from "../panels/context-aware-panel/context-aware-panel";
@@ -61,6 +62,7 @@ const LazyVariablePanel = React.lazy(() => import("../panels/variable-panel"));
 export const AppChrome: React.FC<PropsWithChildren> = ({ children }) => {
   const { isSidebarOpen, isTerminalOpen, selectedPanel } = useChromeState();
   const { setIsSidebarOpen, setIsTerminalOpen } = useChromeActions();
+  const serverConfig = useServerConfig();
   const sidebarRef = React.useRef<ImperativePanelHandle>(null);
   const terminalRef = React.useRef<ImperativePanelHandle>(null);
 
@@ -266,7 +268,9 @@ export const AppChrome: React.FC<PropsWithChildren> = ({ children }) => {
         <Panel>
           <PanelGroup autoSaveId="marimo:chrome:v1:l1" direction="vertical">
             {appBodyPanel}
-            <IfCapability capability="terminal">{terminalPanel}</IfCapability>
+            <IfCapability capability="terminal">
+              {!serverConfig.disable_terminal && terminalPanel}
+            </IfCapability>
           </PanelGroup>
         </Panel>
         <ContextAwarePanel />

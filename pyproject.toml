@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "marimo-agents"
-version = "0.16.5.0"
+version = "0.16.5.2"
 description = "A Marimo concept fork with some support for LLM execution as cells"
 # We try to keep dependencies to a minimum, to avoid conflicts with
 # user environments;we need a very compelling reason for each dependency added.

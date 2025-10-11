@@ -182,7 +182,12 @@ export const UserConfigSchema = z
       })
       // Pass through so that we don't remove any extra keys that the user has added.
       .prefault(() => ({})),
-    server: z.looseObject({}).prefault(() => ({})),
+    server: z
+      .looseObject({
+        disable_home_page: z.boolean().optional(),
+        disable_terminal: z.boolean().optional(),
+      })
+      .prefault(() => ({})),
     sharing: z
       .looseObject({
         html: z.boolean().optional(),
@@ -218,6 +223,7 @@ export type LSPConfig = UserConfig["language_servers"];
 export type DiagnosticsConfig = UserConfig["diagnostics"];
 export type DisplayConfig = UserConfig["display"];
 export type AiConfig = UserConfig["ai"];
+export type ServerConfig = UserConfig["server"];
 
 export const AppTitleSchema = z.string();
 export const SqlOutputSchema = z
