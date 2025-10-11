@@ -160,6 +160,7 @@ async def get_server_config(request: Request) -> JSONResponse:
             "follow_symlink": server_config.get("follow_symlink", False),
             "disable_home_page": server_config.get("disable_home_page", False) or GLOBAL_SETTINGS.DISABLE_HOME_PAGE,
             "disable_terminal": server_config.get("disable_terminal", False) or GLOBAL_SETTINGS.DISABLE_TERMINAL,
+            "disable_package_installation": server_config.get("disable_package_installation", False) or GLOBAL_SETTINGS.DISABLE_PACKAGE_INSTALLATION,
             "disabled_panels": server_config.get("disabled_panels", []) + GLOBAL_SETTINGS.DISABLED_PANELS,
         }
     )

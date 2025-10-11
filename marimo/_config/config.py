@@ -217,6 +217,9 @@ class ServerConfig(TypedDict):
         when no file is specified, preventing access to the home page
     - `disable_terminal`: if true, the server will disable terminal access
         in the UI and reject terminal websocket connections
+    - `disable_package_installation`: if true, the server will disable package
+        installation features including the install input in packages panel
+        and missing package installation prompts
     - `disabled_panels`: list of panel names to disable in the UI.
         Valid panel names: "files", "errors", "variables", "outline", 
         "dependencies", "tracing", "packages", "documentation", "snippets",
@@ -227,6 +230,7 @@ class ServerConfig(TypedDict):
     follow_symlink: bool
     disable_home_page: bool
     disable_terminal: bool
+    disable_package_installation: bool
     disabled_panels: list[str]
 
 
@@ -664,6 +668,7 @@ DEFAULT_CONFIG: MarimoConfig = {
         "follow_symlink": False,
         "disable_home_page": False,
         "disable_terminal": False,
+        "disable_package_installation": False,
         "disabled_panels": [],
     },
     "language_servers": {

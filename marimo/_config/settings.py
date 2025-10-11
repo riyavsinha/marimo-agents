@@ -23,6 +23,7 @@ class GlobalSettings:
     ) in ("true", "1")
     DISABLE_HOME_PAGE: bool = False
     DISABLE_TERMINAL: bool = False
+    DISABLE_PACKAGE_INSTALLATION: bool = False
     DISABLED_PANELS: list[str] = field(default_factory=list)
 
 

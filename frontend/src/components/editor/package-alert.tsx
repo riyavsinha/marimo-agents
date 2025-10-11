@@ -29,7 +29,7 @@ import {
   useAlertActions,
   useAlerts,
 } from "@/core/alerts/state";
-import { useResolvedMarimoConfig } from "@/core/config/config";
+import { useResolvedMarimoConfig, useServerConfig } from "@/core/config/config";
 import type { PackageInstallationStatus } from "@/core/kernel/messages";
 import { useRequestClient } from "@/core/network/requests";
 import { isWasm } from "@/core/wasm/utils";
@@ -79,6 +79,7 @@ export const PackageAlert: React.FC = () => {
   const { packageAlert, packageLogs } = useAlerts();
   const { clearPackageAlert } = useAlertActions();
   const [userConfig] = useResolvedMarimoConfig();
+  const serverConfig = useServerConfig();
   const [desiredPackageVersions, setDesiredPackageVersions] = useState<
     Record<string, string>
   >({});
@@ -86,7 +87,12 @@ export const PackageAlert: React.FC = () => {
     Record<string, string[]>
   >({});
 
-  if (packageAlert === null) {
+  // Don't show package alerts if package installation is disabled
+  if (
+    packageAlert === null ||
+    (isMissingPackageAlert(packageAlert) &&
+      serverConfig.disable_package_installation)
+  ) {
     return null;
   }
 

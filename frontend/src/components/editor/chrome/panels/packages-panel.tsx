@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/table";
 import { Tooltip } from "@/components/ui/tooltip";
 import { toast } from "@/components/ui/use-toast";
-import { useResolvedMarimoConfig } from "@/core/config/config";
+import { useResolvedMarimoConfig, useServerConfig } from "@/core/config/config";
 import { useRequestClient } from "@/core/network/requests";
 import type { DependencyTreeNode } from "@/core/network/types";
 import {
@@ -67,6 +67,7 @@ const PackageActionButton: React.FC<{
 
 const PackagesPanel: React.FC = () => {
   const [config] = useResolvedMarimoConfig();
+  const serverConfig = useServerConfig();
   const packageManager = config.package_management.manager;
   const { getDependencyTree, getPackageList } = useRequestClient();
 
@@ -104,7 +105,12 @@ const PackagesPanel: React.FC = () => {
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      <InstallPackageForm packageManager={packageManager} onSuccess={refetch} />
+      {!serverConfig.disable_package_installation && (
+        <InstallPackageForm
+          packageManager={packageManager}
+          onSuccess={refetch}
+        />
+      )}
       {isTreeSupported && (
         <div className="flex items-center justify-between px-2 py-1 border-b">
           <div className="flex gap-1">
@@ -352,9 +358,10 @@ const UpgradeButton: React.FC<{
 }> = ({ packageName, onSuccess }) => {
   const [loading, setLoading] = React.useState(false);
   const { addPackage } = useRequestClient();
+  const serverConfig = useServerConfig();
 
-  // Hide upgrade button in WASM
-  if (isWasm()) {
+  // Hide upgrade button in WASM or if package installation is disabled
+  if (isWasm() || serverConfig.disable_package_installation) {
     return null;
   }
 
@@ -389,6 +396,12 @@ const RemoveButton: React.FC<{
 }> = ({ packageName, onSuccess }) => {
   const [loading, setLoading] = React.useState(false);
   const { removePackage } = useRequestClient();
+  const serverConfig = useServerConfig();
+
+  // Hide remove button if package installation is disabled
+  if (serverConfig.disable_package_installation) {
+    return null;
+  }
 
   const handleRemovePackage = async () => {
     try {
